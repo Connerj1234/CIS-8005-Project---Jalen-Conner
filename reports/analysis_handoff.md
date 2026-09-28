@@ -37,8 +37,8 @@ The 17 original candidate predictors are grouped below. Names describe the CSV f
 Potential leakage and availability checks:
 
 - Exclude `booking_status` from predictors and `id` because it is an arbitrary row identifier. The first and last ID quartiles have similar outcome rates, but that does not make ID a meaningful feature.
-- Arrival year, month, and day are planned dates and could be known when a booking is made. The team should define **when** the prediction is made before finalizing predictors.
-- Previous booking counts and special requests may be legitimate pre-arrival features only if their values are available at that decision point. Their exact generation timing is undocumented. Confirm this assumption before describing a deployable system.
+- Arrival year, month, and day are planned dates and could be known when a booking is made. Predictor availability depends on **when** the prediction is made.
+- Previous booking counts and special requests may be legitimate pre-arrival features only if their values are available at that decision point. Their exact generation timing is undocumented, which limits claims about deployment.
 - Treat `type_of_meal_plan`, `room_type_reserved`, and `market_segment_type` as nominal codes. Do not assign business names to their values without a verified mapping.
 - Perform any fitted preprocessing after the train/validation split, ideally in a pipeline. The unlabeled `test.csv` cannot provide validation metrics or observed patterns.
 
@@ -80,11 +80,9 @@ X = train.drop(columns=["id", "booking_status"])
 
 Suggested comparison: a simple, interpretable logistic regression with category encoding and scaling as needed, alongside a tree-based classifier. Start with a stratified holdout or cross-validation, report cancellation-class precision/recall, confusion matrix, ROC AUC or PR AUC, and calibration if probabilities will drive actions. Then check robustness against a split that holds out later arrival periods where feasible. Choose a decision threshold using an explicit cost or capacity scenario, not accuracy alone. Keep any model selection, encoding, or scaling within training folds and reserve a final holdout for honest evaluation.
 
-Questions for joint review:
+Open questions:
 
 1. At what point in a booking's life would the hotel score it, and which fields are truly available then?
 2. Should the main validation mimic prediction for a future period, given the strong year shift and only two years in this synthetic file?
 3. What would a confirmation contact cost, and what is the cost of a missed cancellation or false alert? These determine whether a model changes a decision.
-4. Can the team verify any business meaning for category codes and anomalous zero values from the original dataset documentation, without assuming the synthetic codes inherit it exactly?
-
-The two teammates should review this audit and the modeling results together, then jointly build the short presentation and practice explaining every section.
+4. Is there a verified business meaning for category codes and anomalous zero values in the original dataset documentation, and does it carry over to the synthetic data?

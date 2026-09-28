@@ -33,4 +33,4 @@ y = train["booking_status"]  # 1 means canceled
 X = train.drop(columns=["id", "booking_status"])
 ```
 
-Notebook 00 does not learn from the target, impute values, or remove rows. Fit any encoders, scalers, and imputers only on the modeling training partition or within a cross-validation pipeline. The two teammates should review the completed modeling notebook and presentation together. See the handoff report before choosing a validation design or an operational recommendation.
+Notebook 00 does not learn from the target, impute values, or remove rows. Fit any encoders, scalers, and imputers only on the modeling training partition or within a cross-validation pipeline. The handoff report records the open validation and operational questions.
